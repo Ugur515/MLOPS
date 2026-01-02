@@ -1,0 +1,4 @@
+Finale Validierungs-Metriken (bestes Modell):
+=============================================
+Best Validation MSE: 0.0235
+Best Validation RMSE: 0.15 g

@@ -1,0 +1,428 @@
+2025-11-05 19:57:25,290 [INFO] ==================================================
+2025-11-05 19:57:25,291 [INFO] STARTING NEW TRAINING RUN
+2025-11-05 19:57:25,295 [INFO] Git Commit Hash: 5950879
+2025-11-05 19:57:25,295 [INFO] Verwendete Argumente: Namespace(epochs=2, batch_size=64, learning_rate=0.0001, model_name='resnet18')
+2025-11-05 19:57:25,295 [INFO] ==================================================
+2025-11-05 19:57:25,295 [INFO] --- START SCHRITT 1: EDA & DATEIPFADE ---
+2025-11-05 19:57:25,296 [INFO] Existiert die Excel-Datei? True
+2025-11-05 19:57:25,296 [INFO] Existiert der Bilderordner? True
+2025-11-05 19:57:25,296 [INFO] Lade Metadaten...
+2025-11-05 19:57:27,223 [INFO] Metadaten geladen. Spalten: ['filename', 'experiment_id', 'farmbot_name', 'plant_number', 'timestamp', 'temperature', 'humidity', 'illuminancelux', 'illuminanceinfrared', 'illuminancevisible', 'illuminancefullspectrum', 'is_active', 'fresh_weight_total', 'fresh_weight_shoot', 'fresh_weight_root', 'dry_weight_shoot', 'age_days', 'condition', 'shoot_root_ratio_fresh', 'plant_surface_area', 'leaf_surface_area', 'small_leaves', 'big_leaves', 'total_leaves', 'artificial_light', 'lab_book_page']
+2025-11-05 19:57:27,223 [INFO] Erstelle Plot: Target-Distribution
+2025-11-05 19:57:39,418 [INFO] Erstelle Plot: Beispielbilder
+2025-11-05 19:57:43,564 [INFO] Erstelle Plot: Korrelations-Heatmap
+2025-11-05 19:57:46,623 [INFO] Erstelle Plot: Alter vs. Biomasse
+2025-11-05 19:57:48,979 [INFO] Starte Pixelanalyse (kann dauern)...
+2025-11-05 19:58:15,870 [INFO] Pixelanalyse abgeschlossen.
+2025-11-05 19:58:25,806 [INFO] --- DatenqualitÃ¤tsprÃ¼fung ---
+2025-11-05 19:58:25,807 [INFO] Fehlende Labels: 610
+2025-11-05 19:58:25,903 [INFO] Fehlende Bilddateien: 0
+2025-11-05 19:58:25,913 [INFO] Statistik der Zielvariable:
+count    3684.000000
+mean        0.260289
+std         0.289558
+min         0.002100
+25%         0.058000
+50%         0.148000
+75%         0.365000
+max         2.113000
+Name: fresh_weight_total, dtype: float64
+2025-11-05 19:58:25,913 [INFO] --- ENDE SCHRITT 1: EDA ---
+2025-11-05 19:58:25,913 [INFO] 
+
+--- START SCHRITT 2: DATA LOADING & PREPROCESSING ---
+2025-11-05 19:58:25,913 [INFO] 
+Schritt 2.1: Bereinige Metadaten...
+2025-11-05 19:58:25,919 [INFO]   610 Zeilen wegen fehlendem Label entfernt.
+2025-11-05 19:58:25,987 [INFO]   0 Zeilen wegen fehlender Bilddatei entfernt.
+2025-11-05 19:58:25,990 [INFO] -> Verbleibende Samples fÃ¼r Training/Validierung: 3684
+2025-11-05 19:58:25,990 [INFO] 
+Schritt 2.2: Erstelle Train/Validation Split (80/20)...
+2025-11-05 19:58:25,997 [INFO]   Trainings-Samples: 2947
+2025-11-05 19:58:25,997 [INFO]   Validierungs-Samples: 737
+2025-11-05 19:58:25,997 [INFO] 
+Schritt 2.3: Definiere Bild-Transformationen (Resize, Normalize)...
+2025-11-05 19:58:25,998 [INFO]   Transformationen sind definiert.
+2025-11-05 19:58:25,998 [INFO] 
+Schritt 2.4: Definiere die PyTorch Dataset-Klasse...
+2025-11-05 19:58:25,998 [INFO]   PlantBiomassDataset Klasse ist definiert.
+2025-11-05 19:58:25,998 [INFO] 
+Schritt 2.5: Erstelle die finalen DataLoader...
+2025-11-05 19:58:25,999 [INFO]   train_loader und val_loader sind mit Batch-GrÃ¶ÃŸe 64 bereit.
+2025-11-05 19:58:25,999 [INFO] 
+Schritt 2.6: Teste den train_loader...
+2025-11-05 19:58:26,501 [INFO] 
+---   Test-Batch erfolgreich geladen! ---
+2025-11-05 19:58:26,502 [INFO] Form der Bilder (Batch): torch.Size([64, 3, 224, 224])
+2025-11-05 19:58:26,502 [INFO] Form der Labels (Batch): torch.Size([64, 1])
+2025-11-05 19:58:26,502 [INFO] Datentyp der Bilder:     torch.float32
+2025-11-05 19:58:26,502 [INFO] Datentyp der Labels:     torch.float32
+2025-11-05 19:58:26,502 [INFO] 
+--- SCHRITT 2 (DATA LOADING) ABGESCHLOSSEN ---
+2025-11-05 19:58:26,502 [INFO] 
+--- START SCHRITT 3: MODEL ARCHITECTURE ---
+2025-11-05 19:58:26,503 [INFO] RechengerÃ¤t: cpu
+2025-11-05 19:58:26,503 [INFO] 
+Lade pretrained resnet18...
+2025-11-05 19:58:26,877 [INFO] resnet18 Basisnetz geladen. Feature-Dimension: 512
+2025-11-05 19:58:26,877 [INFO] Letzter Layer ersetzt -> Linear(in_features, 1)
+2025-11-05 19:58:26,884 [INFO] Optimizer: Adam, Lernrate: 0.0001
+2025-11-05 19:58:26,884 [INFO] 
+---   Modell, Loss & Optimizer bereit ---
+2025-11-05 19:58:31,220 [INFO] 
+Testausgabe Shape: torch.Size([64, 1]) (sollte [64, 1] oder weniger sein)
+2025-11-05 19:59:00,163 [INFO] ==================================================
+2025-11-05 19:59:00,163 [INFO] STARTING NEW TRAINING RUN
+2025-11-05 19:59:00,169 [INFO] Git Commit Hash: 5950879
+2025-11-05 19:59:00,169 [INFO] Verwendete Argumente: Namespace(epochs=1, batch_size=64, learning_rate=0.0001, model_name='resnet18')
+2025-11-05 19:59:00,169 [INFO] ==================================================
+2025-11-05 19:59:00,169 [INFO] --- START SCHRITT 1: EDA & DATEIPFADE ---
+2025-11-05 19:59:00,169 [INFO] Existiert die Excel-Datei? True
+2025-11-05 19:59:00,170 [INFO] Existiert der Bilderordner? True
+2025-11-05 19:59:00,170 [INFO] Lade Metadaten...
+2025-11-05 19:59:02,017 [INFO] Metadaten geladen. Spalten: ['filename', 'experiment_id', 'farmbot_name', 'plant_number', 'timestamp', 'temperature', 'humidity', 'illuminancelux', 'illuminanceinfrared', 'illuminancevisible', 'illuminancefullspectrum', 'is_active', 'fresh_weight_total', 'fresh_weight_shoot', 'fresh_weight_root', 'dry_weight_shoot', 'age_days', 'condition', 'shoot_root_ratio_fresh', 'plant_surface_area', 'leaf_surface_area', 'small_leaves', 'big_leaves', 'total_leaves', 'artificial_light', 'lab_book_page']
+2025-11-05 19:59:02,018 [INFO] Erstelle Plot: Target-Distribution
+2025-11-05 19:59:05,904 [INFO] Erstelle Plot: Beispielbilder
+2025-11-05 19:59:09,722 [INFO] Erstelle Plot: Korrelations-Heatmap
+2025-11-05 19:59:12,562 [INFO] Erstelle Plot: Alter vs. Biomasse
+2025-11-05 19:59:14,556 [INFO] Starte Pixelanalyse (kann dauern)...
+2025-11-05 19:59:39,729 [INFO] Pixelanalyse abgeschlossen.
+2025-11-05 19:59:42,425 [INFO] --- DatenqualitÃ¤tsprÃ¼fung ---
+2025-11-05 19:59:42,427 [INFO] Fehlende Labels: 610
+2025-11-05 19:59:42,513 [INFO] Fehlende Bilddateien: 0
+2025-11-05 19:59:42,521 [INFO] Statistik der Zielvariable:
+count    3684.000000
+mean        0.260289
+std         0.289558
+min         0.002100
+25%         0.058000
+50%         0.148000
+75%         0.365000
+max         2.113000
+Name: fresh_weight_total, dtype: float64
+2025-11-05 19:59:42,521 [INFO] --- ENDE SCHRITT 1: EDA ---
+2025-11-05 19:59:42,521 [INFO] 
+
+--- START SCHRITT 2: DATA LOADING & PREPROCESSING ---
+2025-11-05 19:59:42,521 [INFO] 
+Schritt 2.1: Bereinige Metadaten...
+2025-11-05 19:59:42,528 [INFO]   610 Zeilen wegen fehlendem Label entfernt.
+2025-11-05 19:59:42,603 [INFO]   0 Zeilen wegen fehlender Bilddatei entfernt.
+2025-11-05 19:59:42,607 [INFO] -> Verbleibende Samples fÃ¼r Training/Validierung: 3684
+2025-11-05 19:59:42,607 [INFO] 
+Schritt 2.2: Erstelle Train/Validation Split (80/20)...
+2025-11-05 19:59:42,612 [INFO]   Trainings-Samples: 2947
+2025-11-05 19:59:42,612 [INFO]   Validierungs-Samples: 737
+2025-11-05 19:59:42,613 [INFO] 
+Schritt 2.3: Definiere Bild-Transformationen (Resize, Normalize)...
+2025-11-05 19:59:42,613 [INFO]   Transformationen sind definiert.
+2025-11-05 19:59:42,613 [INFO] 
+Schritt 2.4: Definiere die PyTorch Dataset-Klasse...
+2025-11-05 19:59:42,613 [INFO]   PlantBiomassDataset Klasse ist definiert.
+2025-11-05 19:59:42,613 [INFO] 
+Schritt 2.5: Erstelle die finalen DataLoader...
+2025-11-05 19:59:42,614 [INFO]   train_loader und val_loader sind mit Batch-GrÃ¶ÃŸe 64 bereit.
+2025-11-05 19:59:42,614 [INFO] 
+Schritt 2.6: Teste den train_loader...
+2025-11-05 19:59:43,123 [INFO] 
+---   Test-Batch erfolgreich geladen! ---
+2025-11-05 19:59:43,123 [INFO] Form der Bilder (Batch): torch.Size([64, 3, 224, 224])
+2025-11-05 19:59:43,123 [INFO] Form der Labels (Batch): torch.Size([64, 1])
+2025-11-05 19:59:43,124 [INFO] Datentyp der Bilder:     torch.float32
+2025-11-05 19:59:43,124 [INFO] Datentyp der Labels:     torch.float32
+2025-11-05 19:59:43,124 [INFO] 
+--- SCHRITT 2 (DATA LOADING) ABGESCHLOSSEN ---
+2025-11-05 19:59:43,124 [INFO] 
+--- START SCHRITT 3: MODEL ARCHITECTURE ---
+2025-11-05 19:59:43,124 [INFO] RechengerÃ¤t: cpu
+2025-11-05 19:59:43,125 [INFO] 
+Lade pretrained resnet18...
+2025-11-05 19:59:43,469 [INFO] resnet18 Basisnetz geladen. Feature-Dimension: 512
+2025-11-05 19:59:43,470 [INFO] Letzter Layer ersetzt -> Linear(in_features, 1)
+2025-11-05 19:59:43,473 [INFO] Optimizer: Adam, Lernrate: 0.0001
+2025-11-05 19:59:43,473 [INFO] 
+---   Modell, Loss & Optimizer bereit ---
+2025-11-05 19:59:48,163 [INFO] 
+Testausgabe Shape: torch.Size([64, 1]) (sollte [64, 1] oder weniger sein)
+2025-11-05 20:13:38,777 [INFO] ==================================================
+2025-11-05 20:13:38,777 [INFO] STARTING NEW TRAINING RUN
+2025-11-05 20:13:38,782 [INFO] Git Commit Hash: 5950879
+2025-11-05 20:13:38,782 [INFO] Verwendete Argumente: Namespace(epochs=1, batch_size=64, learning_rate=0.0001, model_name='resnet18')
+2025-11-05 20:13:38,782 [INFO] ==================================================
+2025-11-05 20:13:38,783 [INFO] --- START SCHRITT 1: EDA & DATEIPFADE ---
+2025-11-05 20:13:38,783 [INFO] Existiert die Excel-Datei? True
+2025-11-05 20:13:38,783 [INFO] Existiert der Bilderordner? True
+2025-11-05 20:13:38,783 [INFO] Lade Metadaten...
+2025-11-05 20:13:40,638 [INFO] Metadaten geladen. Spalten: ['filename', 'experiment_id', 'farmbot_name', 'plant_number', 'timestamp', 'temperature', 'humidity', 'illuminancelux', 'illuminanceinfrared', 'illuminancevisible', 'illuminancefullspectrum', 'is_active', 'fresh_weight_total', 'fresh_weight_shoot', 'fresh_weight_root', 'dry_weight_shoot', 'age_days', 'condition', 'shoot_root_ratio_fresh', 'plant_surface_area', 'leaf_surface_area', 'small_leaves', 'big_leaves', 'total_leaves', 'artificial_light', 'lab_book_page']
+2025-11-05 20:13:40,638 [INFO] Erstelle Plot: Target-Distribution
+2025-11-05 20:13:43,941 [INFO] Erstelle Plot: Beispielbilder
+2025-11-05 20:13:47,375 [INFO] Erstelle Plot: Korrelations-Heatmap
+2025-11-05 20:13:49,741 [INFO] Erstelle Plot: Alter vs. Biomasse
+2025-11-05 20:13:52,037 [INFO] Starte Pixelanalyse (kann dauern)...
+2025-11-05 20:14:17,488 [INFO] Pixelanalyse abgeschlossen.
+2025-11-05 20:14:21,099 [INFO] --- DatenqualitÃ¤tsprÃ¼fung ---
+2025-11-05 20:14:21,100 [INFO] Fehlende Labels: 610
+2025-11-05 20:14:21,191 [INFO] Fehlende Bilddateien: 0
+2025-11-05 20:14:21,199 [INFO] Statistik der Zielvariable:
+count    3684.000000
+mean        0.260289
+std         0.289558
+min         0.002100
+25%         0.058000
+50%         0.148000
+75%         0.365000
+max         2.113000
+Name: fresh_weight_total, dtype: float64
+2025-11-05 20:14:21,200 [INFO] --- ENDE SCHRITT 1: EDA ---
+2025-11-05 20:14:21,200 [INFO] 
+
+--- START SCHRITT 2: DATA LOADING & PREPROCESSING ---
+2025-11-05 20:14:21,200 [INFO] 
+Schritt 2.1: Bereinige Metadaten...
+2025-11-05 20:14:21,209 [INFO]   610 Zeilen wegen fehlendem Label entfernt.
+2025-11-05 20:14:21,287 [INFO]   0 Zeilen wegen fehlender Bilddatei entfernt.
+2025-11-05 20:14:21,289 [INFO] -> Verbleibende Samples fÃ¼r Training/Validierung: 3684
+2025-11-05 20:14:21,290 [INFO] 
+Schritt 2.2: Erstelle Train/Validation Split (80/20)...
+2025-11-05 20:14:21,296 [INFO]   Trainings-Samples: 2947
+2025-11-05 20:14:21,296 [INFO]   Validierungs-Samples: 737
+2025-11-05 20:14:21,296 [INFO] 
+Schritt 2.3: Definiere Bild-Transformationen (Resize, Normalize)...
+2025-11-05 20:14:21,297 [INFO]   Transformationen sind definiert.
+2025-11-05 20:14:21,298 [INFO] 
+Schritt 2.4: Definiere die PyTorch Dataset-Klasse...
+2025-11-05 20:14:21,298 [INFO]   PlantBiomassDataset Klasse ist definiert.
+2025-11-05 20:14:21,299 [INFO] 
+Schritt 2.5: Erstelle die finalen DataLoader...
+2025-11-05 20:14:21,299 [INFO]   train_loader und val_loader sind mit Batch-GrÃ¶ÃŸe 64 bereit.
+2025-11-05 20:14:21,300 [INFO] 
+Schritt 2.6: Teste den train_loader...
+2025-11-05 20:14:21,817 [INFO] 
+---   Test-Batch erfolgreich geladen! ---
+2025-11-05 20:14:21,817 [INFO] Form der Bilder (Batch): torch.Size([64, 3, 224, 224])
+2025-11-05 20:14:21,817 [INFO] Form der Labels (Batch): torch.Size([64, 1])
+2025-11-05 20:14:21,817 [INFO] Datentyp der Bilder:     torch.float32
+2025-11-05 20:14:21,817 [INFO] Datentyp der Labels:     torch.float32
+2025-11-05 20:14:21,817 [INFO] 
+--- SCHRITT 2 (DATA LOADING) ABGESCHLOSSEN ---
+2025-11-05 20:14:21,817 [INFO] 
+--- START SCHRITT 3: MODEL ARCHITECTURE ---
+2025-11-05 20:14:21,818 [INFO] RechengerÃ¤t: cpu
+2025-11-05 20:14:21,818 [INFO] 
+Lade pretrained resnet18...
+2025-11-05 20:14:22,147 [INFO] resnet18 Basisnetz geladen. Feature-Dimension: 512
+2025-11-05 20:14:22,148 [INFO] Letzter Layer ersetzt -> Linear(in_features, 1)
+2025-11-05 20:14:22,150 [INFO] Optimizer: Adam, Lernrate: 0.0001
+2025-11-05 20:14:22,151 [INFO] 
+---   Modell, Loss & Optimizer bereit ---
+2025-11-05 20:14:26,311 [INFO] 
+Testausgabe Shape: torch.Size([64, 1]) (sollte [64, 1] oder weniger sein)
+2025-11-05 20:14:26,311 [INFO] 
+--- START SCHRITT 4: TRAINING LOOP ---
+2025-11-05 20:14:26,312 [INFO] Starte Training fÃ¼r 1 Epochen...
+2025-11-05 20:14:26,312 [INFO] Modell wird auf 'cpu' trainiert.
+2025-11-05 20:14:26,312 [INFO] Bestes Modell wird gespeichert unter: /home/andre/Repositorien/MLOps_P1_17/checkpoints/best_biomass_model_resnet18.pth
+2025-11-05 20:14:26,312 [INFO] Ergebnisse (Plot, Metriken) werden gespeichert unter: /home/andre/Repositorien/MLOps_P1_17/results
+2025-11-05 20:22:23,966 [INFO] 
+--- Epoche 1/1 ---
+2025-11-05 20:22:23,967 [INFO]   Zeit: 477.65s
+2025-11-05 20:22:23,967 [INFO]   Train Loss (MSE): 0.0665
+2025-11-05 20:22:23,967 [INFO]   Val Loss (MSE):   0.0732
+2025-11-05 20:22:23,967 [INFO]   Val RMSE:         0.27 g
+2025-11-05 20:22:24,089 [INFO]   -> Neues bestes Modell gespeichert! (Val Loss: 0.0732)
+2025-11-05 20:22:24,090 [INFO] 
+--- TRAINING ABGESCHLOSSEN ---
+2025-11-05 20:22:24,090 [INFO] Bestes Modell (Validierungs-Loss: 0.0732) gespeichert unter /home/andre/Repositorien/MLOps_P1_17/checkpoints/best_biomass_model_resnet18.pth
+2025-11-05 20:22:24,090 [INFO] 
+Erstelle Plot fÃ¼r Loss-Verlauf...
+2025-11-05 20:22:49,233 [INFO] Loss-Plot gespeichert unter /home/andre/Repositorien/MLOps_P1_17/results/training_curves.png
+2025-11-05 20:22:49,234 [INFO] Speichere finale Metriken in /home/andre/Repositorien/MLOps_P1_17/results/metrics.txt...
+2025-11-05 20:22:49,235 [INFO] Metriken erfolgreich gespeichert.
+2025-11-05 20:22:49,236 [INFO] 
+--- SCHRITT 4 (TRAINING & RESULTS) ABGESCHLOSSEN ---
+2025-11-05 22:11:14,767 [INFO] ==================================================
+2025-11-05 22:11:14,771 [INFO] STARTING NEW TRAINING RUN
+2025-11-05 22:11:14,816 [INFO] Git Commit Hash: 747798d
+2025-11-05 22:11:14,816 [INFO] Verwendete Argumente: Namespace(epochs=20, batch_size=64, learning_rate=0.0001, model_name='resnet18')
+2025-11-05 22:11:14,817 [INFO] ==================================================
+2025-11-05 22:11:14,817 [INFO] --- START SCHRITT 1: EDA & DATEIPFADE ---
+2025-11-05 22:11:14,819 [INFO] Existiert die Excel-Datei? True
+2025-11-05 22:11:14,820 [INFO] Existiert der Bilderordner? True
+2025-11-05 22:11:14,820 [INFO] Lade Metadaten...
+2025-11-05 22:11:16,576 [INFO] Metadaten geladen. Spalten: ['filename', 'experiment_id', 'farmbot_name', 'plant_number', 'timestamp', 'temperature', 'humidity', 'illuminancelux', 'illuminanceinfrared', 'illuminancevisible', 'illuminancefullspectrum', 'is_active', 'fresh_weight_total', 'fresh_weight_shoot', 'fresh_weight_root', 'dry_weight_shoot', 'age_days', 'condition', 'shoot_root_ratio_fresh', 'plant_surface_area', 'leaf_surface_area', 'small_leaves', 'big_leaves', 'total_leaves', 'artificial_light', 'lab_book_page']
+2025-11-05 22:11:16,577 [INFO] Erstelle Plot: Target-Distribution
+2025-11-05 22:11:25,676 [INFO] Erstelle Plot: Beispielbilder
+2025-11-05 22:11:28,769 [INFO] Erstelle Plot: Korrelations-Heatmap
+2025-11-05 22:11:31,003 [INFO] Erstelle Plot: Alter vs. Biomasse
+2025-11-05 22:11:33,199 [INFO] Starte Pixelanalyse (kann dauern)...
+2025-11-05 22:13:05,742 [INFO] Pixelanalyse abgeschlossen.
+2025-11-05 22:13:09,774 [INFO] --- Datenqualitätsprüfung ---
+2025-11-05 22:13:09,789 [INFO] Fehlende Labels: 610
+2025-11-05 22:13:10,676 [INFO] Fehlende Bilddateien: 0
+2025-11-05 22:13:10,691 [INFO] Statistik der Zielvariable:
+count    3684.000000
+mean        0.260289
+std         0.289558
+min         0.002100
+25%         0.058000
+50%         0.148000
+75%         0.365000
+max         2.113000
+Name: fresh_weight_total, dtype: float64
+2025-11-05 22:13:10,693 [INFO] --- ENDE SCHRITT 1: EDA ---
+2025-11-05 22:13:10,693 [INFO] 
+
+--- START SCHRITT 2: DATA LOADING & PREPROCESSING ---
+2025-11-05 22:13:10,694 [INFO] 
+Schritt 2.1: Bereinige Metadaten...
+2025-11-05 22:13:10,699 [INFO]   610 Zeilen wegen fehlendem Label entfernt.
+2025-11-05 22:13:11,478 [INFO]   0 Zeilen wegen fehlender Bilddatei entfernt.
+2025-11-05 22:13:11,481 [INFO] -> Verbleibende Samples für Training/Validierung: 3684
+2025-11-05 22:13:11,482 [INFO] 
+Schritt 2.2: Erstelle Train/Validation Split (80/20)...
+2025-11-05 22:13:11,488 [INFO]   Trainings-Samples: 2947
+2025-11-05 22:13:11,489 [INFO]   Validierungs-Samples: 737
+2025-11-05 22:13:11,489 [INFO] 
+Schritt 2.3: Definiere Bild-Transformationen (Resize, Normalize)...
+2025-11-05 22:13:11,491 [INFO]   Transformationen sind definiert.
+2025-11-05 22:13:11,492 [INFO] 
+Schritt 2.4: Definiere die PyTorch Dataset-Klasse...
+2025-11-05 22:13:11,492 [INFO]   PlantBiomassDataset Klasse ist definiert.
+2025-11-05 22:13:11,493 [INFO] 
+Schritt 2.5: Erstelle die finalen DataLoader...
+2025-11-05 22:13:11,494 [INFO]   train_loader und val_loader sind mit Batch-Größe 64 bereit.
+2025-11-05 22:13:11,495 [INFO] 
+Schritt 2.6: Teste den train_loader...
+2025-11-05 22:13:11,967 [INFO] 
+---   Test-Batch erfolgreich geladen! ---
+2025-11-05 22:13:11,968 [INFO] Form der Bilder (Batch): torch.Size([64, 3, 224, 224])
+2025-11-05 22:13:11,968 [INFO] Form der Labels (Batch): torch.Size([64, 1])
+2025-11-05 22:13:11,968 [INFO] Datentyp der Bilder:     torch.float32
+2025-11-05 22:13:11,968 [INFO] Datentyp der Labels:     torch.float32
+2025-11-05 22:13:11,968 [INFO] 
+--- SCHRITT 2 (DATA LOADING) ABGESCHLOSSEN ---
+2025-11-05 22:13:11,968 [INFO] 
+--- START SCHRITT 3: MODEL ARCHITECTURE ---
+2025-11-05 22:13:11,969 [INFO] Rechengerät: cpu
+2025-11-05 22:13:11,969 [INFO] 
+Lade pretrained resnet18...
+2025-11-05 22:13:12,302 [INFO] resnet18 Basisnetz geladen. Feature-Dimension: 512
+2025-11-05 22:13:12,302 [INFO] Letzter Layer ersetzt -> Linear(in_features, 1)
+2025-11-05 22:13:12,305 [INFO] Optimizer: Adam, Lernrate: 0.0001
+2025-11-05 22:13:12,306 [INFO] 
+---   Modell, Loss & Optimizer bereit ---
+2025-11-05 22:13:14,547 [INFO] 
+Testausgabe Shape: torch.Size([64, 1]) (sollte [64, 1] oder weniger sein)
+2025-11-06 10:47:09,053 [INFO] ==================================================
+2025-11-06 10:47:09,054 [INFO] STARTING NEW TRAINING RUN
+2025-11-06 10:47:09,107 [INFO] Git Commit Hash: 747798d
+2025-11-06 10:47:09,107 [INFO] Verwendete Argumente: Namespace(epochs=3, batch_size=64, learning_rate=0.0001, model_name='resnet18')
+2025-11-06 10:47:09,108 [INFO] ==================================================
+2025-11-06 10:47:09,108 [INFO] --- START SCHRITT 1: EDA & DATEIPFADE ---
+2025-11-06 10:47:09,111 [INFO] Existiert die Excel-Datei? True
+2025-11-06 10:47:09,111 [INFO] Existiert der Bilderordner? True
+2025-11-06 10:47:09,112 [INFO] Lade Metadaten...
+2025-11-06 10:47:11,074 [INFO] Metadaten geladen. Spalten: ['filename', 'experiment_id', 'farmbot_name', 'plant_number', 'timestamp', 'temperature', 'humidity', 'illuminancelux', 'illuminanceinfrared', 'illuminancevisible', 'illuminancefullspectrum', 'is_active', 'fresh_weight_total', 'fresh_weight_shoot', 'fresh_weight_root', 'dry_weight_shoot', 'age_days', 'condition', 'shoot_root_ratio_fresh', 'plant_surface_area', 'leaf_surface_area', 'small_leaves', 'big_leaves', 'total_leaves', 'artificial_light', 'lab_book_page']
+2025-11-06 10:47:11,075 [INFO] Erstelle Plot: Target-Distribution
+2025-11-06 10:47:16,317 [INFO] Erstelle Plot: Beispielbilder
+2025-11-06 10:47:20,333 [INFO] Erstelle Plot: Korrelations-Heatmap
+2025-11-06 11:03:13,980 [INFO] ==================================================
+2025-11-06 11:03:13,981 [INFO] STARTING NEW TRAINING RUN
+2025-11-06 11:03:14,028 [INFO] Git Commit Hash: 747798d
+2025-11-06 11:03:14,028 [INFO] Verwendete Argumente: Namespace(epochs=3, batch_size=64, learning_rate=0.0001, model_name='resnet18')
+2025-11-06 11:03:14,028 [INFO] ==================================================
+2025-11-06 11:03:14,029 [INFO] --- START SCHRITT 1: EDA & DATEIPFADE ---
+2025-11-06 11:03:14,030 [INFO] Existiert die Excel-Datei? True
+2025-11-06 11:03:14,031 [INFO] Existiert der Bilderordner? True
+2025-11-06 11:03:14,031 [INFO] Lade Metadaten...
+2025-11-06 11:03:15,779 [INFO] Metadaten geladen. Spalten: ['filename', 'experiment_id', 'farmbot_name', 'plant_number', 'timestamp', 'temperature', 'humidity', 'illuminancelux', 'illuminanceinfrared', 'illuminancevisible', 'illuminancefullspectrum', 'is_active', 'fresh_weight_total', 'fresh_weight_shoot', 'fresh_weight_root', 'dry_weight_shoot', 'age_days', 'condition', 'shoot_root_ratio_fresh', 'plant_surface_area', 'leaf_surface_area', 'small_leaves', 'big_leaves', 'total_leaves', 'artificial_light', 'lab_book_page']
+2025-11-06 11:03:15,780 [INFO] Erstelle Plot: Target-Distribution
+2025-11-06 11:03:18,802 [INFO] Erstelle Plot: Beispielbilder
+2025-11-06 11:03:21,850 [INFO] Erstelle Plot: Korrelations-Heatmap
+2025-11-06 11:03:23,941 [INFO] Erstelle Plot: Alter vs. Biomasse
+2025-11-06 11:03:26,126 [INFO] Starte Pixelanalyse (kann dauern)...
+2025-11-06 11:04:55,940 [INFO] Pixelanalyse abgeschlossen.
+2025-11-06 11:04:59,145 [INFO] --- Datenqualitätsprüfung ---
+2025-11-06 11:04:59,189 [INFO] Fehlende Labels: 610
+2025-11-06 11:05:00,045 [INFO] Fehlende Bilddateien: 0
+2025-11-06 11:05:00,060 [INFO] Statistik der Zielvariable:
+count    3684.000000
+mean        0.260289
+std         0.289558
+min         0.002100
+25%         0.058000
+50%         0.148000
+75%         0.365000
+max         2.113000
+Name: fresh_weight_total, dtype: float64
+2025-11-06 11:05:00,061 [INFO] --- ENDE SCHRITT 1: EDA ---
+2025-11-06 11:05:00,061 [INFO] 
+
+--- START SCHRITT 2: DATA LOADING & PREPROCESSING ---
+2025-11-06 11:05:00,061 [INFO] 
+Schritt 2.1: Bereinige Metadaten...
+2025-11-06 11:05:00,066 [INFO]   610 Zeilen wegen fehlendem Label entfernt.
+2025-11-06 11:05:00,812 [INFO]   0 Zeilen wegen fehlender Bilddatei entfernt.
+2025-11-06 11:05:00,814 [INFO] -> Verbleibende Samples für Training/Validierung: 3684
+2025-11-06 11:05:00,815 [INFO] 
+Schritt 2.2: Erstelle Train/Validation Split (80/20)...
+2025-11-06 11:05:00,822 [INFO]   Trainings-Samples: 2947
+2025-11-06 11:05:00,823 [INFO]   Validierungs-Samples: 737
+2025-11-06 11:05:00,823 [INFO] 
+Schritt 2.3: Definiere Bild-Transformationen (Resize, Normalize, Augmentation)...
+2025-11-06 11:05:00,825 [INFO]   Transformationen sind definiert (Training mit Augmentation).
+2025-11-06 11:05:00,825 [INFO] 
+Schritt 2.4: Definiere die PyTorch Dataset-Klasse...
+2025-11-06 11:05:00,825 [INFO]   PlantBiomassDataset Klasse ist definiert.
+2025-11-06 11:05:00,826 [INFO] 
+Schritt 2.5: Erstelle die finalen DataLoader...
+2025-11-06 11:06:10,306 [INFO] ==================================================
+2025-11-06 11:06:10,307 [INFO] STARTING NEW TRAINING RUN
+2025-11-06 11:06:10,354 [INFO] Git Commit Hash: 747798d
+2025-11-06 11:06:10,355 [INFO] Verwendete Argumente: Namespace(epochs=3, batch_size=64, learning_rate=0.0001, model_name='resnet18')
+2025-11-06 11:06:10,355 [INFO] ==================================================
+2025-11-06 11:06:10,356 [INFO] --- START SCHRITT 1: EDA & DATEIPFADE ---
+2025-11-06 11:06:10,358 [INFO] Existiert die Excel-Datei? True
+2025-11-06 11:06:10,358 [INFO] Existiert der Bilderordner? True
+2025-11-06 11:06:10,359 [INFO] Lade Metadaten...
+2025-11-06 11:06:12,106 [INFO] Metadaten geladen. Spalten: ['filename', 'experiment_id', 'farmbot_name', 'plant_number', 'timestamp', 'temperature', 'humidity', 'illuminancelux', 'illuminanceinfrared', 'illuminancevisible', 'illuminancefullspectrum', 'is_active', 'fresh_weight_total', 'fresh_weight_shoot', 'fresh_weight_root', 'dry_weight_shoot', 'age_days', 'condition', 'shoot_root_ratio_fresh', 'plant_surface_area', 'leaf_surface_area', 'small_leaves', 'big_leaves', 'total_leaves', 'artificial_light', 'lab_book_page']
+2025-11-06 11:06:12,107 [INFO] Erstelle Plot: Target-Distribution
+2025-11-06 11:06:19,818 [INFO] Erstelle Plot: Beispielbilder
+2025-11-06 11:06:24,839 [INFO] Erstelle Plot: Korrelations-Heatmap
+2025-11-06 11:06:27,420 [INFO] Erstelle Plot: Alter vs. Biomasse
+2025-11-06 11:06:29,592 [INFO] Starte Pixelanalyse (kann dauern)...
+2025-11-06 11:06:51,697 [INFO] Pixelanalyse abgeschlossen.
+2025-11-06 11:06:58,644 [INFO] --- Datenqualitätsprüfung ---
+2025-11-06 11:06:58,648 [INFO] Fehlende Labels: 610
+2025-11-06 11:06:59,560 [INFO] Fehlende Bilddateien: 0
+2025-11-06 11:06:59,566 [INFO] Statistik der Zielvariable:
+count    3684.000000
+mean        0.260289
+std         0.289558
+min         0.002100
+25%         0.058000
+50%         0.148000
+75%         0.365000
+max         2.113000
+Name: fresh_weight_total, dtype: float64
+2025-11-06 11:06:59,566 [INFO] --- ENDE SCHRITT 1: EDA ---
+2025-11-06 11:06:59,566 [INFO] 
+
+--- START SCHRITT 2: DATA LOADING & PREPROCESSING ---
+2025-11-06 11:06:59,567 [INFO] 
+Schritt 2.1: Bereinige Metadaten...
+2025-11-06 11:06:59,570 [INFO]   610 Zeilen wegen fehlendem Label entfernt.
+2025-11-06 11:07:00,290 [INFO]   0 Zeilen wegen fehlender Bilddatei entfernt.
+2025-11-06 11:07:00,291 [INFO] -> Verbleibende Samples für Training/Validierung: 3684
+2025-11-06 11:07:00,292 [INFO] 
+Schritt 2.2: Erstelle Train/Validation Split (80/20)...
+2025-11-06 11:07:00,295 [INFO]   Trainings-Samples: 2947
+2025-11-06 11:07:00,295 [INFO]   Validierungs-Samples: 737
+2025-11-06 11:07:00,295 [INFO] 
+Schritt 2.3: Definiere Bild-Transformationen (Resize, Normalize, Augmentation)...
+2025-11-06 11:07:00,296 [INFO]   Transformationen sind definiert (Training mit Augmentation).
+2025-11-06 11:07:00,296 [INFO] 
+Schritt 2.4: Definiere die PyTorch Dataset-Klasse...
+2025-11-06 11:07:00,297 [INFO]   PlantBiomassDataset Klasse ist definiert.
+2025-11-06 11:07:00,297 [INFO] 
+Schritt 2.5: Erstelle die finalen DataLoader...
